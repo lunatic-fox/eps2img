@@ -7,7 +7,7 @@ input="$1"
 output="$2"
 format="$3"
 
-outputFormats="jpeg|bmp|tiff|png"
+outputFormats="jpeg|bmp|tiff|png|pdf"
 
 # message, r, g, b
 color() {
@@ -50,9 +50,9 @@ fi
 
 case $output in
   +(*/))
-    output="${output}${defaultFilename}.${format}";;
+    output="${output}${defaultFilename}.$format";;
   !(*/*.*)) 
-    output="${output}.${format}";;
+    output="$output.$format";;
   *)
     defaultOutputFormat=`echo $output | sed -E 's/(.+\/)+.+\.(.+)$/\2/'`
     isValidFormat $defaultOutputFormat
@@ -64,9 +64,14 @@ case $format in
    "bmp") device="bmp16m";;
   "tiff") device="tiff24nc";;
    "png") device="png16m";;
+   "pdf") device="pdfwrite";;
 esac
 
-$(gs -q -dGraphicsAlphaBits=4 -sDEVICE=${device} -dEPSCrop -o ${output} ${input})
+if [[ $format != "pdf" ]]; then
+  isRaster="-dGraphicsAlphaBits=4"
+fi
+
+$(gs -q $isRaster -sDEVICE=$device -dEPSCrop -o $output $input)
 
 color ":: Success :: File \"$output\" created in the workflow!" 66 245 66
 echo -e $coloredMsg

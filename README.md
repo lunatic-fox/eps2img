@@ -2,16 +2,17 @@
 
   ![EPS 2 Image](./.github/workflows/logo.png)
 
-  ### *An action to convert `.eps` (Encapsulated PostScript) files to image formats.*
+  ### *An action to convert `.eps` (Encapsulated PostScript) files to image formats and `.pdf`.*
 
 </div>
 
 
-***Supported output image formats***
-- `.png` \* default
+***Supported output formats***
+- `.png` ***\* default***
 - `.bmp`
 - `.tiff`
 - `.jpeg`
+- `.pdf`
 
 ## Usage
 ### Inputs
@@ -106,8 +107,8 @@ format: bmp
 &emsp;Creates the output file in the same path, with the same filename of the `.eps` file and convert the file to defined `format`.
 ```yaml
 input: ./folder/myFile.eps
-format: tiff
-# generates -> output: ./folder/myFile.tiff
+format: pdf
+# generates -> output: ./folder/myFile.pdf
 ```
 
 <div align="center">

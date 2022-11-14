@@ -44,3 +44,11 @@ jobs:
           input: ./.github/workflows/logo.eps
           output: ./logo4 # The path will be converted to "./logo4.jpeg"
           format: jpeg
+
+      - name: Convert EPS to PDF with "input" and "format" defined, but with incomplete "output"
+        if: success()
+        uses: ./
+        with:
+          input: ./.github/workflows/logo.eps
+          output: ./logo5 # The path will be converted to "./logo5.pdf"
+          format: pdf
