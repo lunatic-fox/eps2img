@@ -1,6 +1,6 @@
 name: EPS 2 Image
 author: lunatic-fox
-description: Convert an EPS file into a Bitmap
+description: Convert an EPS file into a Image (PNG, JPEG, TIFF or BMP)
 
 inputs:
   input:
