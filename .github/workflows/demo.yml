@@ -1,6 +1,8 @@
 name: Demonstration
 on:
-  - push
+  push:
+    branches:
+      - main
 jobs:
   test-actions:
     runs-on: ubuntu-latest
