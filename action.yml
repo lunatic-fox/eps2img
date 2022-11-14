@@ -1,0 +1,27 @@
+name: EPS 2 Image
+author: lunatic-fox
+description: Convert an EPS file into a Bitmap
+
+inputs:
+  input:
+    description: Input path of the EPS file.
+    required: true
+  output:
+    description: Output path of the image file.
+    required: false
+  format:
+    description: Format of the image file.
+    required: false
+    default: png
+
+runs:
+  using: docker
+  image: Dockerfile
+  args:
+    - ${{ inputs.input }}
+    - ${{ inputs.output }}
+    - ${{ inputs.format }}
+
+branding:
+  icon: image
+  color: green

@@ -1,0 +1,46 @@
+name: Demonstration
+on:
+  - push
+jobs:
+  test-actions:
+    runs-on: ubuntu-latest
+    name: Test actions
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Convert EPS to PNG with "input" and "output" defined
+        uses: ./
+        with:
+          input: ./.github/workflows/logo.eps
+          output: ./logo1.png
+
+      - name: Convert EPS to PNG with "input" defined, but with incomplete "output"
+        if: success()
+        uses: ./
+        with:
+          input: ./.github/workflows/logo.eps
+          output: ./logo2 # The path will be converted to "./logo2.png"
+
+      - name: Convert EPS to PNG with "input" and "format" defined, but with incomplete "output"
+        if: success()
+        uses: ./
+        with:
+          input: ./.github/workflows/logo.eps
+          output: ./logo3 # The path will be converted to "./logo3.png"
+          format: png
+
+      - name: Convert EPS to TIFF with "input" and "format" defined, but with no "output"
+        if: success()
+        uses: ./
+        with:
+          input: ./.github/workflows/logo.eps
+          format: tiff 
+          # The output path will be converted to "./.github/workflows/logo.tiff"
+
+      - name: Convert EPS to JPEG with "input" and "format" defined, but with incomplete "output"
+        if: success()
+        uses: ./
+        with:
+          input: ./.github/workflows/logo.eps
+          output: ./logo4 # The path will be converted to "./logo4.jpeg"
+          format: jpeg
