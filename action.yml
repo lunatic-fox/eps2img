@@ -1,6 +1,6 @@
 name: EPS 2 Image
 author: lunatic-fox
-description: Convert an EPS file into a Image (PNG, JPEG, TIFF or BMP)
+description: Convert an EPS file into Image formats (PNG, JPEG, TIFF or BMP) or into Vector formats (SVG or PDF).
 
 inputs:
   input:

@@ -2,17 +2,21 @@
 
   ![EPS 2 Image](./.github/workflows/logo.png)
 
-  ### *An action to convert `.eps` (Encapsulated PostScript) files to image formats and `.pdf`.*
+  ### *An action to convert `.eps` (Encapsulated PostScript) files to image formats and vector formats.*
 
 </div>
 
 
 ***Supported output formats***
-- `.png` ***\* default***
-- `.bmp`
-- `.tiff`
-- `.jpeg`
-- `.pdf`
+- **Image formats (*raster*)**
+  - `.png` ***\* default***
+  - `.bmp`
+  - `.tiff`
+  - `.jpeg`
+
+- **Vector formats**
+  - `.svg`
+  - `.pdf`
 
 ## Usage
 ### Inputs
@@ -33,6 +37,23 @@ format:
 &emsp;Images exist only in the workflow, so you will need another action to commit or upload the generated images.
 
 ---
+### Available options
+```yaml
+- uses: lunatic-fox/eps2img@v1
+  with:
+    # Required. Full relative path to EPS file.
+    input: ./pathToEPS/file.eps
+
+    # Optional. Path to the output file.
+    # Patterns: "" | "./" | "./dirname/" | "./filename" | "./filename.xyz"
+    output: ./pathTo/output-file
+
+    # Optional. Format of the output file.
+    # Options: "png" | "bmp" | "tiff" | "jpeg" | "svg" | "pdf"
+    format: png
+```
+---
+
 #### `input`
 &emsp;This input parameter is required and is the full relative path to your `.eps` file.
 
