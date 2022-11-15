@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - main
+      - develop
 jobs:
   test-actions:
     runs-on: ubuntu-latest
@@ -47,10 +48,19 @@ jobs:
           output: ./logo4 # The path will be converted to "./logo4.jpeg"
           format: jpeg
 
+      - name: Convert EPS to SVG with "input" and "format" defined, but with incomplete "output"
+        if: success()
+        uses: ./
+        with:
+          input: ./.github/workflows/logo.eps
+          output: ./logo5 # The path will be converted to "./logo5.svg"
+          format: svg
+
       - name: Convert EPS to PDF with "input" and "format" defined, but with incomplete "output"
         if: success()
         uses: ./
         with:
           input: ./.github/workflows/logo.eps
-          output: ./logo5 # The path will be converted to "./logo5.pdf"
+          output: ./logo6 # The path will be converted to "./logo6.pdf"
           format: pdf
+
