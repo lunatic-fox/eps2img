@@ -45,11 +45,11 @@ format:
     input: ./pathToEPS/file.eps
 
     # Optional. Path to the output file.
-    # Patterns: "", "./", "./dirname/", "./filename", "./filename.xyz"
+    # Patterns: "" | "./" | "./dirname/" | "./filename" | "./filename.xyz"
     output: ./pathTo/output-file
 
     # Optional. Format of the output file.
-    # Options: "png", "bmp", "tiff", "jpeg", "svg", "pdf"
+    # Options: "png" | "bmp" | "tiff" | "jpeg" | "svg" | "pdf"
     format: png
 ```
 ---
