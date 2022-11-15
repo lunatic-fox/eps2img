@@ -103,6 +103,7 @@ if [[ $toCairo ]]; then
 
   if [[ $fmt == "jpeg" ]]; then mv "$output.jpg" "$output.jpeg"; fi
   if [[ $fmt == "tiff" ]]; then mv "$output.tif" "$output.tiff"; fi
+  if [[ $fmt == +(png|jpeg|tiff) ]]; then output="$output.$fmt"; fi
   
   wait
 
