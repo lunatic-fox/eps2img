@@ -20,15 +20,19 @@ error() {
   exit 1
 }
 
+replace() {
+  echo $1 | sed -E "s/$2/$3/"
+}
+
 # Change format
 # $1 path; $2 extension
 changeFmt() {
-  local r=`echo $1 | sed -E 's/(.+\/)+(.+)\..+$/\1\2/'`
+  local r=$(replace $1 '(.+\/)+(.+)\..+$' '\1\2')
   echo "$r.$2"
 }
 
 removeFmt() {
-  local r=`echo $1 | sed -E 's/(.+\/)+(.+)\..+$/\1\2/'`
+  local r=$(replace $1 '(.+\/)+(.+)\..+$' '\1\2')
   echo "${r}$2"
 }
 
@@ -46,14 +50,12 @@ fi
 
 isValidFormat $format
 
-defaultFilename=`echo $input | sed -E 's/(.+\/)+(.+)\.eps$/\2/'`
+defaultFilename=$(replace $input '(.+\/)+(.+)\.eps$' '\2')
 
 if [ -z $output ]; then
-  output=`echo $input | sed -E 's/(.+)\.eps$/\1/'`
+  output=$(replace $input '(.+)\.eps$' '\1')  
 
-  if [[ $format == +($outputFormats) ]]; then
-    endFormat=".$format"
-  fi
+  if [[ $format == +($outputFormats) ]]; then endFormat=".$format"; fi
 
   output="${output}${endFormat}"
   color "::  Info  :: Since \"output\" parameter is not defined, the converted file will be outputed to \"$output\"" 221 158 255
@@ -65,7 +67,7 @@ case $output in
   !(*/*.*)) 
     output="$output.$format";;
   *)
-    defaultOutputFormat=`echo $output | sed -E 's/(.+\/)+.+\.(.+)$/\2/'`
+    defaultOutputFormat=$(replace $output '(.+\/)+.+\.(.+)$' '\2')
     isValidFormat $defaultOutputFormat
     format=$defaultOutputFormat;;
 esac
@@ -82,7 +84,11 @@ else
   isRaster="-dGraphicsAlphaBits=4"
 fi
 
-gs -q -dBATCH -dNOPAUSE $isRaster -sDEVICE=$device -dEPSCrop -sOutputFile=$output $input
+dirOutput=$(replace $output '(.+\/).+$' '\1')
+
+if [ ! -d $dirOutput ]; then mkdir -p $dirOutput; fi
+
+gs $isRaster -sDEVICE=$device -dEPSCrop -o $output -q $input
 
 if [[ $toCairo ]]; then
   input=$output

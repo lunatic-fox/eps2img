@@ -2,10 +2,9 @@
 
   ![EPS 2 Image](./.github/workflows/logo.png)
 
-  ### *An action to convert `.eps` (Encapsulated PostScript) files to image formats and vector formats.*
+  ### *An action to convert `.eps` (Encapsulated PostScript) files to image and vector formats.*
 
 </div>
-
 
 ***Supported output formats***
 - **Image formats (*raster*)**
@@ -34,7 +33,14 @@ format:
 ```
 
 ### Outputs
-&emsp;Images exist only in the workflow, so you will need another action to commit or upload the generated images.
+&emsp;Images exist only within workflow, so you will need another action to commit or upload the created images.\
+&emsp;Here are some suggestions of 3rd party actions:
+
+#### *To auto commit*
+- [**Git Auto Commit**](https://github.com/marketplace/actions/git-auto-commit)
+
+#### *To upload image*
+- [**Publish on imgur**](https://github.com/marketplace/actions/publish-on-imgur)
 
 ---
 ### Available options
@@ -46,7 +52,8 @@ format:
 
     # Optional. Path to the output file.
     # Patterns: "" | "./" | "./dirname/" | "./filename" | "./filename.xyz"
-    output: ./pathTo/output-file
+    # ".xyz" = supported formats
+    output: ./pathTo/outputFilename.xyz
 
     # Optional. Format of the output file.
     # Options: "png" | "bmp" | "tiff" | "jpeg" | "svg" | "pdf"
@@ -69,7 +76,7 @@ input: ./folder/myFile.eps
 &emsp;Creates the output file in the same path and with the same filename of the `.eps` file.
 ```yaml
 input: ./folder/myFile.eps
-# generates -> output: ./folder/myFile.png 
+# creates -> output: ./folder/myFile.png 
 ```
 
 ***Example: Is a complete path***\
@@ -84,7 +91,7 @@ output: ./myConvertedFile.png
 ```yaml
 input: ./folder/myFile.eps
 output: ./screenshot/myPicture
-# generates -> output: ./screenshot/myPicture.png 
+# creates -> output: ./screenshot/myPicture.png 
 ```
 
 ***Example: Is an endpoint***\
@@ -92,7 +99,7 @@ output: ./screenshot/myPicture
 ```yaml
 input: ./folder/myFile.eps
 output: ./screenshot/
-# generates -> output: ./screenshot/myFile.png 
+# creates -> output: ./screenshot/myFile.png 
 ```
 ---
 #### `format`
@@ -112,7 +119,7 @@ format: tiff
 input: ./folder/myFile.eps
 output: ./screenshot/myPicture
 format: jpeg
-# generates -> output: ./screenshot/myPicture.jpeg
+# creates -> output: ./screenshot/myPicture.jpeg
 ```
 
 ***Example: If `output` is an endpoint***\
@@ -121,7 +128,7 @@ format: jpeg
 input: ./folder/myFile.eps
 output: ./screenshot/
 format: bmp
-# generates -> output: ./screenshot/myFile.bmp 
+# creates -> output: ./screenshot/myFile.bmp 
 ```
 
 ***Example: If `output` does not exist***\
@@ -129,7 +136,7 @@ format: bmp
 ```yaml
 input: ./folder/myFile.eps
 format: pdf
-# generates -> output: ./folder/myFile.pdf
+# creates -> output: ./folder/myFile.pdf
 ```
 
 <div align="center">
