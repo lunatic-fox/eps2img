@@ -7,7 +7,7 @@ input="$1"
 output="$2"
 format="$3"
 
-outputFormats="jpeg|bmp|tiff|png|pdf|svg"
+outputFormats="jpeg|bmp|tiff|png|pdf|svg|ps"
 
 # Echo with foreground color
 # $1 message; $2 red; $3 green; $4 blue
@@ -62,9 +62,9 @@ case $output in
     format=$defaultOutputFormat;;
 esac
 
-if [[ $format == +(jpeg|tiff|png|svg) ]]; then toCairo=true; fi
+if [[ $format == +(jpeg|tiff|png|svg|ps) ]]; then toCairo=true; fi
 
-if [[ $format == +(jpeg|tiff|png|pdf|svg) ]]; then
+if [[ $format == +(jpeg|tiff|png|pdf|svg|ps) ]]; then
   device="pdfwrite"
   fmt=$format
   format="pdf"
@@ -84,9 +84,9 @@ if [[ $toCairo ]]; then
   input=$output
 
   case $fmt in
-    svg)
-      output=$(changeFmt $input "svg")
-      pdftocairo -svg $input $output;;
+    +(svg|ps))
+      output=$(changeFmt $input $fmt)
+      pdftocairo -$fmt $input $output;;
     +(png|tiff))
       output=$(removeFmt $input);
       pdftocairo -singlefile -$fmt -transp $input $output;;
