@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - main
-      - develop
 jobs:
   test-actions:
     runs-on: ubuntu-latest
@@ -63,4 +62,12 @@ jobs:
           input: ./.github/workflows/logo.eps
           output: ./logo6 # The path will be converted to "./logo6.pdf"
           format: pdf
+
+      - name: Convert EPS to PS with "input" and "format" defined, but with incomplete "output"
+        if: success()
+        uses: ./
+        with:
+          input: ./.github/workflows/logo.eps
+          output: ./logo7 # The path will be converted to "./logo7.ps"
+          format: ps
 

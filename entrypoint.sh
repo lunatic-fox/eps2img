@@ -7,34 +7,29 @@ input="$1"
 output="$2"
 format="$3"
 
-outputFormats="jpeg|bmp|tiff|png|pdf|svg"
+outputFormats="jpeg|bmp|tiff|png|pdf|svg|ps"
 
 # Echo with foreground color
 # $1 message; $2 red; $3 green; $4 blue
-color() {
-  echo -e "\033[38;2;$2;$3;$4m$1\033[0m"
-}
+color() { echo -e "\033[38;2;$2;$3;$4m$1\033[0m"; }
 
 error() {
   color "::  Error  :: $1" 255 0 0
   exit 1
 }
 
-replace() {
-  echo $1 | sed -E "s/$2/$3/"
-}
+# Check if the `.eps` exists
+if [[ ! -f $input ]]; then
+  error "Parameter \"input\" does not exist in \"$input\""
+fi
+
+replace() { echo $1 | sed -E "s/$2/$3/"; }
 
 # Change format
 # $1 path; $2 extension
-changeFmt() {
-  local r=$(replace $1 '(.+\/)+(.+)\..+$' '\1\2')
-  echo "$r.$2"
-}
+changeFmt() { echo "$(replace $1 '(.+\/)+(.+)\..+$' '\1\2').$2"; }
 
-removeFmt() {
-  local r=$(replace $1 '(.+\/)+(.+)\..+$' '\1\2')
-  echo "${r}$2"
-}
+removeFmt() { echo $(replace $1 '(.+\/)+(.+)\..+$' '\1\2'); }
 
 # Validates the $format input parameter
 isValidFormat() {
@@ -42,11 +37,6 @@ isValidFormat() {
     error "Unknown format: \"$1\""
   fi
 }
-
-# Check if the `.eps` exists
-if [ ! -f $input ]; then
-  error "Parameter \"input\" does not exist in \"$input\""
-fi
 
 isValidFormat $format
 
@@ -72,42 +62,43 @@ case $output in
     format=$defaultOutputFormat;;
 esac
 
-if [[ $format == +(jpeg|tiff|png|svg) ]]; then toCairo=true; fi
+if [[ $format == +(jpeg|tiff|png|svg|ps) ]]; then toCairo=true; fi
 
-if [[ $format == +(jpeg|tiff|png|pdf|svg) ]]; then
+if [[ $format == +(jpeg|tiff|png|pdf|svg|ps) ]]; then
   device="pdfwrite"
   fmt=$format
   format="pdf"
   output=$(changeFmt $output "pdf")
 else
   device="bmp16m"
-  isRaster="-dGraphicsAlphaBits=4"
+  isBMP="-dGraphicsAlphaBits=4"
 fi
 
 dirOutput=$(replace $output '(.+\/).+$' '\1')
 
 if [ ! -d $dirOutput ]; then mkdir -p $dirOutput; fi
 
-gs $isRaster -sDEVICE=$device -dEPSCrop -o $output -q $input
+gs $isBMP -sDEVICE=$device -dEPSCrop -o $output -q $input
 
 if [[ $toCairo ]]; then
   input=$output
 
   case $fmt in
-    svg)
-      output=$(changeFmt $input "svg")
-      pdftocairo -svg $input $output;;
+    +(svg|ps))
+      output=$(changeFmt $input $fmt)
+      pdftocairo -$fmt $input $output;;
     +(png|tiff))
       output=$(removeFmt $input);
       pdftocairo -singlefile -$fmt -transp $input $output;;
     jpeg)
       output=$(removeFmt $input);
-      pdftocairo -singlefile -$fmt -jpegopt quality=100,optimize=y $input $output;;
+      pdftocairo -singlefile -$fmt -jpegopt quality=100,optimize=y $input $output
+      wait
+      mv "$output.jpg" "$output.jpeg";;
   esac
 
   wait
 
-  if [[ $fmt == "jpeg" ]]; then mv "$output.jpg" "$output.jpeg"; fi
   if [[ $fmt == "tiff" ]]; then mv "$output.tif" "$output.tiff"; fi
   if [[ $fmt == +(png|jpeg|tiff) ]]; then output="$output.$fmt"; fi
   

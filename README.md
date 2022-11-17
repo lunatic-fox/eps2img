@@ -15,6 +15,7 @@
 
 - **Vector formats**
   - `.svg`
+  - `.ps`
   - `.pdf`
 
 ## Usage
@@ -52,11 +53,10 @@ format:
 
     # Optional. Path to the output file.
     # Patterns: "" | "./" | "./dirname/" | "./filename" | "./filename.xyz"
-    # ".xyz" = supported formats
-    output: ./pathTo/outputFilename.xyz
+    output: ./pathTo/outputFilename
 
     # Optional. Format of the output file.
-    # Options: "png" | "bmp" | "tiff" | "jpeg" | "svg" | "pdf"
+    # Options: "png" | "bmp" | "tiff" | "jpeg" | "svg" | "ps" | "pdf"
     format: png
 ```
 ---
