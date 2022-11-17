@@ -27,16 +27,12 @@ replace() { echo $1 | sed -E "s/$2/$3/"; }
 
 # Change format
 # $1 path; $2 extension
-changeFmt() { echo "$(replace $1 '(.+\/)+(.+)\..+$' '\1\2').$2"; }
+changeFmt() { echo "$(replace "$1" '(.+\/)+(.+)\..+$' '\1\2').$2"; }
 
-removeFmt() { echo $(replace $1 '(.+\/)+(.+)\..+$' '\1\2'); }
+rmFmt() { echo $(replace "$1" '(.+\/)+(.+)\..+$' '\1\2'); }
 
 # Validates the $format input parameter
-isValidFormat() {
-  if [[ $1 == !($outputFormats) ]]; then
-    error "Unknown format: \"$1\""
-  fi
-}
+isValidFormat() { if [[ $1 == !($outputFormats) ]]; then error "Unknown format: \"$1\""; fi; }
 
 isValidFormat $format
 
@@ -47,13 +43,13 @@ if [ -z $output ]; then
 
   if [[ $format == +($outputFormats) ]]; then endFormat=".$format"; fi
 
-  output="${output}${endFormat}"
+  output="$output$endFormat"
   color "Info" "Since \"output\" parameter is not defined, the converted file will be outputed to \"$output\"" 66 111 245
 fi
 
 case $output in
   +(*/))
-    output="${output}${defaultFilename}.$format";;
+    output="$output$defaultFilename.$format";;
   !(*/*.*)) 
     output="$output.$format";;
   *)
@@ -62,7 +58,10 @@ case $output in
     format=$defaultOutputFormat;;
 esac
 
-if [[ $format == +(jpeg|tiff|png|svg|ps) ]]; then toCairo=true; fi
+if [[ $format == +(jpeg|tiff|png|svg|ps) ]]; then
+  toCairo=true
+  cks=$(echo -n "$input$output$format" | sha256sum | sed -E "s/^([a-fA-F0-9]+).*/\1/")
+fi
 
 if [[ $format == +(jpeg|tiff|png|pdf|svg|ps) ]]; then
   device="pdfwrite"
@@ -76,22 +75,26 @@ fi
 
 dirOutput=$(replace $output '(.+\/).+$' '\1')
 
-if [ ! -d $dirOutput ]; then mkdir -p $dirOutput; fi
+if [[ ! -d $dirOutput ]]; then mkdir -p $dirOutput; fi
+if [[ $toCairo ]]; then 
+  output="$(replace $output '(.+\/).+$' '\1')_${cks}_$(replace $output '.+\/(.+)$' '\1')"
+fi
 
 gs $isBMP -sDEVICE=$device -dEPSCrop -o $output -q $input
 
 if [[ $toCairo ]]; then
   input=$output
+  rmTmp() { echo $(replace $1 "(.+\/)_${cks}_(.+)$" '\1\2'); }
 
   case $fmt in
     +(svg|ps))
-      output=$(changeFmt $input $fmt)
+      output=$(rmTmp $(changeFmt $input $fmt))
       pdftocairo -$fmt $input $output;;
     +(png|tiff))
-      output=$(removeFmt $input);
+      output=$(rmTmp $(rmFmt $input $fmt))
       pdftocairo -singlefile -$fmt -transp $input $output;;
     jpeg)
-      output=$(removeFmt $input);
+      output=$(rmTmp $(rmFmt $input $fmt))
       pdftocairo -singlefile -$fmt -jpegopt quality=100,optimize=y $input $output
       wait
       mv "$output.jpg" "$output.jpeg";;
