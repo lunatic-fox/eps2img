@@ -11,7 +11,7 @@ outputFormats="jpeg|bmp|tiff|png|pdf|svg|ps"
 
 # Echo with foreground color
 # $1 tag; $2 message; $3 red; $4 green; $5 blue
-color() { echo -e "\033[48;2;$3;$4;$5m  $1  \033[0m \033[38;2;$3;$4;$5m$2\033[0m"; }
+color() { echo -e "\033[38;2;0;0;0m\033[48;2;$3;$4;$5m  $1  \033[0m \033[38;2;$3;$4;$5m$2\033[0m"; }
 
 error() {
   color "Error" "$1" 255 0 0
