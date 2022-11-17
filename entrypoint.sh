@@ -10,11 +10,11 @@ format="$3"
 outputFormats="jpeg|bmp|tiff|png|pdf|svg|ps"
 
 # Echo with foreground color
-# $1 message; $2 red; $3 green; $4 blue
-color() { echo -e "\033[38;2;$2;$3;$4m$1\033[0m"; }
+# $1 tag; $2 message; $3 red; $4 green; $5 blue
+color() { echo -e "\033[48;2;$3;$4;$5m  $1  \033[0m \033[38;2;$3;$4;$5m$2\033[0m"; }
 
 error() {
-  color "::  Error  :: $1" 255 0 0
+  color "Error" "$1" 255 0 0
   exit 1
 }
 
@@ -48,7 +48,7 @@ if [ -z $output ]; then
   if [[ $format == +($outputFormats) ]]; then endFormat=".$format"; fi
 
   output="${output}${endFormat}"
-  color "::  Info  :: Since \"output\" parameter is not defined, the converted file will be outputed to \"$output\"" 221 158 255
+  color "Info" "Since \"output\" parameter is not defined, the converted file will be outputed to \"$output\"" 66 111 245
 fi
 
 case $output in
@@ -107,4 +107,4 @@ if [[ $toCairo ]]; then
   rm $input
 fi
 
-color ":: Success :: File \"$output\" created in the workflow!" 66 245 66
+color "Success" "File \"$output\" created in the workflow!" 66 245 66
